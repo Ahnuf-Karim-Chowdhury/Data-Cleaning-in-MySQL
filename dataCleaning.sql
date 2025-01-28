@@ -1,4 +1,3 @@
-
 select * 
 from layoffs;
 
@@ -72,6 +71,8 @@ set company = trim(company);
 select distinct industry
 from staging_ order by 1;
 
+-- --------------------------------------------------------------
+
 -- sandardizing the data
 UPDATE staging_
 SET industry = 'Crypto'
@@ -115,5 +116,36 @@ modify column `date` date;
 -- check
 select `date`
 from staging_;
+
+-- -----------------------------------------------------------
+
+-- Removing the NULL datas
+select *
+from staging_
+where total_laid_off is null and percentage_laid_off is null;
+ 
+ update staging_
+ set industry = null
+ where industry= '';
+ 
+ select *
+ from staging_
+ where industry is null
+ or industry = '' ;
+ 
+ select *
+ from staging_ s1
+ join staging_ s2
+ on s1.company = s2.company and s1.location = s2.location
+ where s1.industry is null or s1.industry='' 
+       and s2.industry is not null;
+       
+-- populating the null values for industry of the same company and location 
+update staging_ s1
+join staging_ s2
+on s1.company = s2.company and s1.location = s2.location
+set s1.industry = s2.industry
+where s1.industry is null and s2.industry is not null;
+
 
 
