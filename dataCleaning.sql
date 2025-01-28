@@ -62,8 +62,58 @@ select *
 from staging_;
 
 
+select company, trim(company)
+from staging_;
+-- removing the white space from the `company`
+update staging_ 
+set company = trim(company);
+
+-- serially checking the data colums of industry
+select distinct industry
+from staging_ order by 1;
+
+-- sandardizing the data
+UPDATE staging_
+SET industry = 'Crypto'
+WHERE industry LIKE 'Crypto%';
 
 
+-- checking the distinct locations for need of standardization
+select distinct location
+from staging_
+order by 1;
 
+-- checking the distinct country for need of standardization
+select distinct country
+from staging_
+order by 1;
+
+-- single period at the end of 'United States.' detected!. Standardizing that data..
+select distinct country , trim(trailing '.' from country)
+from staging_
+order by 1;
+-- the actual standardization
+update staging_
+set country = trim(trailing '.' from country)
+where country like 'United States%';
+-- check 
+select distinct country
+from staging_
+order by 1;
+
+
+-- Standardizing the data string to a date formate
+select `date`,
+str_to_date(`date`,'%m/%d/%Y')
+from staging_;
+-- the actual convertion
+update staging_
+set `date` = str_to_date(`date`,'%m/%d/%Y');
+-- change the column type from text to date
+alter table staging_
+modify column `date` date;
+-- check
+select `date`
+from staging_;
 
 
