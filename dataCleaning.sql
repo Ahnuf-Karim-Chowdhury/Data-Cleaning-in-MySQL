@@ -147,5 +147,13 @@ on s1.company = s2.company and s1.location = s2.location
 set s1.industry = s2.industry
 where s1.industry is null and s2.industry is not null;
 
+-- --------------------------------------------------------------
+-- Remove any unecessary column or rows
+select * from staging_;
+
+alter table staging_
+drop column row_no;
+
+
 
 
